@@ -19,6 +19,7 @@ from datetime import datetime
 
 dir = '/Users/rbc/Downloads/'
 fn = 'Counting 2017 - Sheet1.csv'
+first_day_of_year = datetime.strptime("01/01/2017", "%m/%d/%Y")
 col_with_perform = 5
 com_count = 0
 performance_days = []
@@ -28,6 +29,7 @@ colon_start = ''
 
 if __name__ == '__main__':
 
+  # open and parse csv performance column
   with open(dir+fn, 'rb') as csvfile:
     spamreader = csv.reader(csvfile)
     for row in spamreader:
@@ -37,6 +39,7 @@ if __name__ == '__main__':
         if ':' in perform_col and colon_start == '':
           colon_start = row[0]
 
+  # slice cells into individual performances
   for day in performance_days:
     if ' ' in day:
       for x in day.split(' '):
@@ -44,13 +47,24 @@ if __name__ == '__main__':
     else:
       performances.append(day)
 
-  print "YEAR TO DATE:"
+  # calculate days in year
+  today = datetime.now()
+  days_in_year = today - first_day_of_year
+  
+  # calculate days since I started logging minutes
+  start_date = datetime.strptime(colon_start, "%m/%d/%Y")
+  time_diff = today - start_date
+  weeks_with_time = float(time_diff.days/7.0)
+
+  print str(days_in_year.days) + " DAYS IN THE YEAR SO FAR (counting today)"
   print ""
-  print str(len(performances)) +  " total performances on " + str(len(performance_days)) + " days"
+  print str(len(performances)) +  " total performances on " + str(len(performance_days)) + " unique days"
 
   com_count = 0
   busk_count = 0
   colon_count = 0
+
+  # count/log 'Com' and 'Busk' Occurrences
   for performance in performances:
     if 'Com' in performance:
       com_count = com_count + 1
@@ -59,20 +73,11 @@ if __name__ == '__main__':
     if ':' in performance:
       colon_count = colon_count + 1
       performances_with_min.append(performance)
-
   print "  " + str(int(com_count)) + "x comedy"
   print "  " + str(int(busk_count)) +"x busk"
   print ""
   
-  # calculate days that since started logging minutes
-  start_date = datetime.strptime(colon_start, "%m/%d/%Y")
-  today = datetime.now()
-  time_diff = today - start_date
-  weeks_with_time = float(time_diff.days/7.0)
-
-  #print str(int(colon_count)) + " performances with minutes logged in last " + str(time_diff.days) + " days (since " + colon_start + ")."
-  print str(int(colon_count)) + " performances with minutes logged in last " + str(weeks_with_time) + " weeks (since " + colon_start + ")."
-
+  # count total minutes logged and 'Com' minutes logged
   total_min = 0
   com_min = 0
   com_min_count = 0
@@ -82,13 +87,20 @@ if __name__ == '__main__':
       com_min = com_min + float(p.split(':')[1])
       com_min_count = com_min_count + 1
 
-  print "  " + str(total_min) + " min == " + str(float(total_min/60)) + " total hours logged"
-  print "  " + str(com_min) + " min == " + str(float(com_min/60)) + " comedy hours logged"
-  print ""
-
-  print str(com_min_count) + " comedy performances with minutes logged"
-  print str(float(com_min/com_min_count)) + " minutes is average comedy set length since " + colon_start
+  # calculate/log meta
   com_min_weekly = float(com_min/weeks_with_time)
-  print str(com_min_weekly) + " minutes per week is average comedy stage time since " + colon_start
-  print "Keeping up this average will yield " + str(float(com_min_weekly*52/60)) + " comedy stage hours in a year."
+  total_min_weekly = float(total_min/weeks_with_time)
+
+  print str(int(colon_count)) + " total performances with minutes logged in last " + str(weeks_with_time) + " weeks (since " + colon_start + ")."
+  print "  " + str(float(total_min/60)) + " total hours logged (" + str(total_min) + " min)"
+  print "  " + str(float(total_min_weekly/60)) + " hours per week is average total stage time since " + colon_start
+  print ""
+  print str(com_min_count) + " comedy performances with minutes logged since " + colon_start
+  print "  " + str(float(com_min/60)) + " comedy hours logged (" + str(com_min) + " min)"
+  print "  " + str(float(com_min/com_min_count)) + " minutes is average comedy set length"
+  print "  " + str(float(com_min_weekly/60)) + " hours per week is average comedy stage time"
+  print ""
+  print "Keep up this average and a year will yield "
+  print "  " + str(float(com_min_weekly*52/60)) + " comedy stage hours"
+  print "  " + str(float(total_min_weekly*52/60)) + " total stage hours"
   print ""
