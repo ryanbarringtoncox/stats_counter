@@ -60,11 +60,10 @@ if __name__ == '__main__':
   print ""
   print str(len(performances)) +  " total performances on " + str(len(performance_days)) + " unique days"
 
+  # count/log 'Com' and 'Busk' Occurrences
   com_count = 0
   busk_count = 0
   colon_count = 0
-
-  # count/log 'Com' and 'Busk' Occurrences
   for performance in performances:
     if 'Com' in performance:
       com_count = com_count + 1
@@ -74,7 +73,8 @@ if __name__ == '__main__':
       colon_count = colon_count + 1
       performances_with_min.append(performance)
   print "  " + str(int(com_count)) + "x comedy"
-  print "  " + str(int(busk_count)) +"x busk"
+  print "  " + str(int(busk_count)) +"x  busk"
+  print "  " + str(int(len(performances)-com_count-busk_count)) +"x  misc"
   print ""
   
   # count total minutes logged and 'Com' minutes logged
@@ -91,13 +91,14 @@ if __name__ == '__main__':
   com_min_weekly = float(com_min/weeks_with_time)
   total_min_weekly = float(total_min/weeks_with_time)
 
-  print str(int(colon_count)) + " total performances with minutes logged in last " + str(weeks_with_time) + " weeks (since " + colon_start + ")."
+  print str(int(colon_count)) + " total performances with minutes logged in last " + str(weeks_with_time) + " weeks since " + colon_start + "."
   print "  " + str(float(total_min/60)) + " total hours logged (" + str(total_min) + " min)"
-  print "  " + str(float(total_min_weekly/60)) + " hours per week is average total stage time since " + colon_start
+  print "  " + str(float(total_min_weekly/60)) + " hours per week is average total stage time"
   print ""
   print str(com_min_count) + " comedy performances with minutes logged since " + colon_start
   print "  " + str(float(com_min/60)) + " comedy hours logged (" + str(com_min) + " min)"
   print "  " + str(float(com_min/com_min_count)) + " minutes is average comedy set length"
+  print "  " + str(float(com_min_count/weeks_with_time)) + " average comedy performances per week"
   print "  " + str(float(com_min_weekly/60)) + " hours per week is average comedy stage time"
   print ""
   print "Keep up this average and a year will yield "
